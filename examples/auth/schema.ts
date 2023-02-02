@@ -3,65 +3,85 @@ import { allOperations, allowAll } from '@keystone-6/core/access';
 import { text, checkbox, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
+function isAdminOrSameUser ({ session, item }: { session: any, item: Lists.User.Item }) {
+  // you need to have a session to do this
+  if (!session) return false;
+
+  // admins can do anything
+  if (session.data.isAdmin) return true;
+
+  // the authenticated user needs to be equal to the user we are updating
+  return session.itemId === item.id;
+}
+
+function isAdmin ({ session }: { session: any }) {
+  // you need to have a session to do this
+  if (!session) return false;
+
+  // admins can do anything
+  if (session.data.isAdmin) return true;
+
+  // otherwise, no
+  return false;
+}
+
 export const lists: Lists = {
   User: list({
     access: {
       operation: {
         ...allOperations(allowAll),
-        // Only allow admins to delete users
+        // only allow admins to delete users
         delete: ({ session }) => session?.data.isAdmin,
       },
     },
     ui: {
-      // Since you can't delete users unless you're an admin, we hide the UI for it
+      // since you can't delete users unless you're an admin, we hide the UI for it
       hideDelete: ({ session }) => !session?.data.isAdmin,
       listView: {
-        // These are the default columns that will be displayed in the list view
+        // the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
       },
     },
     fields: {
-      // The user's name
+      // the user's name
       name: text({ validation: { isRequired: true } }),
-      // The user's email address, used as the identity field for auth
+
+      // the user's email address, used as the identity field for authentication
+      //   we use isIndexed to enforce this email is unique
       email: text({ isIndexed: 'unique', validation: { isRequired: true } }),
-      // The user's password, used as the secret field for auth
+
+      // the user's password, used as the secret field for authentication
       password: password({
         access: {
-          // Passwords can always be set when creating items
-          // Users can change their own passwords, and Admins can change anyone's password
-          update: ({ session, item }) =>
-            session && (session.data.isAdmin || session.itemId === item.id),
+          update: isAdminOrSameUser,
         },
         ui: {
-          // Based on the same logic as update access, the password field is editable.
-          // The password field is hidden from non-Admin users (except for themselves)
-          // createView: {
-          //   fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
-          // },
+          // the password field is hidden for the same reasons as access.update
           itemView: {
-            fieldMode: ({ session, item }) =>
-              session && (session.data.isAdmin || session.itemId === item.id) ? 'edit' : 'hidden',
+            fieldMode: ({ session, item }) => {
+              if (isAdminOrSameUser({ session, item })) return 'edit';
+              return 'hidden';
+            }
           },
           listView: {
+            // hidden except for admins
             fieldMode: ({ session }) => (session?.data?.isAdmin ? 'read' : 'hidden'),
           },
         },
       }),
-      // This is used for access control, both in the schema and for the Admin UI
       isAdmin: checkbox({
         access: {
-          // Only Admins can set the isAdmin flag for any users
-          create: ({ session }) => session?.data.isAdmin,
-          update: ({ session }) => session?.data.isAdmin,
+          // only admins can create or update the isAdmin flag for users
+          create: isAdmin,
+          update: isAdmin,
         },
         ui: {
-          // All users can see the isAdmin status, only admins can change it
+          // only admins can edit this field
           createView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'hidden'),
+            fieldMode: ({ session }) => isAdmin({ session }) ? 'edit' : 'hidden',
           },
           itemView: {
-            fieldMode: ({ session }) => (session?.data.isAdmin ? 'edit' : 'read'),
+            fieldMode: ({ session }) => isAdmin({ session }) ? 'edit' : 'read',
           },
         },
       }),
