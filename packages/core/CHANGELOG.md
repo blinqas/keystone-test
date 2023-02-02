@@ -1,5 +1,50 @@
 # @keystone-6/core
 
+## 5.0.0
+
+### Major Changes
+
+- [#8221](https://github.com/keystonejs/keystone/pull/8221) [`88a7c6986`](https://github.com/keystonejs/keystone/commit/88a7c6986fd421be2080cb29ca9c86e8bbc40ae5) Thanks [@borisno2](https://github.com/borisno2)! - Upgrade Apollo Server to version 4
+
+- [#8283](https://github.com/keystonejs/keystone/pull/8283) [`11bb288ff`](https://github.com/keystonejs/keystone/commit/11bb288ff50f4cc1b269f513fb1dd9f5fb63b832) Thanks [@dcousens](https://github.com/dcousens)! - Changes `graphql.omit` type from array to explicit `{ read: boolean, create: boolean, update: boolean }`
+
+- [#8283](https://github.com/keystonejs/keystone/pull/8283) [`11bb288ff`](https://github.com/keystonejs/keystone/commit/11bb288ff50f4cc1b269f513fb1dd9f5fb63b832) Thanks [@dcousens](https://github.com/dcousens)! - Changes `graphql.*.isNonNull` to `graphql.isNonNull.*`, and adds `graphql.isNonNull.update` for optimistic locking usecases
+
+- [#8280](https://github.com/keystonejs/keystone/pull/8280) [`384748d85`](https://github.com/keystonejs/keystone/commit/384748d85f06755ee7c8aa6f74f0ffae486b82c1) Thanks [@dcousens](https://github.com/dcousens)! - Renames `isValidSession` on `pageMiddleware` to `wasAccessAllowed`, which is what it actually is
+
+### Minor Changes
+
+- [#8264](https://github.com/keystonejs/keystone/pull/8264) [`5a9ca539f`](https://github.com/keystonejs/keystone/commit/5a9ca539f714f9dd3b70886710410c28d977045a) Thanks [@jhohlfeld](https://github.com/jhohlfeld)! - Add `acl` option for s3 storage configuration
+
+- [#8241](https://github.com/keystonejs/keystone/pull/8241) [`25a1bf4ed`](https://github.com/keystonejs/keystone/commit/25a1bf4edb9844768e5e30027802365564cacd64) Thanks [@borisno2](https://github.com/borisno2)! - Adds an experimental `extendPrismaSchema` configuration option for lists and fields to mutate the prisma schema
+
+- [#8283](https://github.com/keystonejs/keystone/pull/8283) [`11bb288ff`](https://github.com/keystonejs/keystone/commit/11bb288ff50f4cc1b269f513fb1dd9f5fb63b832) Thanks [@dcousens](https://github.com/dcousens)! - Removes `keystone build` errors for `graphql.isNonNull.create` and `graphql.isNonNull.update` when field access control is configured
+
+- [#8221](https://github.com/keystonejs/keystone/pull/8221) [`88a7c6986`](https://github.com/keystonejs/keystone/commit/88a7c6986fd421be2080cb29ca9c86e8bbc40ae5) Thanks [@borisno2](https://github.com/borisno2)! - Remove experimental `generateNextGraphqlAPI` - use `getContext` instead
+
+### Patch Changes
+
+- [#8177](https://github.com/keystonejs/keystone/pull/8177) [`3ef0d9d7d`](https://github.com/keystonejs/keystone/commit/3ef0d9d7d857c622cec95b702ea717fa920f8fc0) Thanks [@borisno2](https://github.com/borisno2)! - Fixes creating new relationships in card view on create item page
+
+- [#8239](https://github.com/keystonejs/keystone/pull/8239) [`ebd725938`](https://github.com/keystonejs/keystone/commit/ebd7259383161225c9fcc8597d2e5a13eb2de015) Thanks [@borisno2](https://github.com/borisno2)! - Resolves error when deleting an item that has a file or image that is no longer on the filesystem
+
+- [#8234](https://github.com/keystonejs/keystone/pull/8234) [`d074e42c4`](https://github.com/keystonejs/keystone/commit/d074e42c4cc45bf72aca7a9254057d56516fec58) Thanks [@borisno2](https://github.com/borisno2)! - Export `next/head` for use in auth package
+
+- [#8237](https://github.com/keystonejs/keystone/pull/8237) [`9598c0466`](https://github.com/keystonejs/keystone/commit/9598c04661bfbea88fef5d615565c09b2d6c41ea) Thanks [@borisno2](https://github.com/borisno2)! - Resolve `<div> cannot appear as a dependant of <p>` error on List Page
+
+- [#8216](https://github.com/keystonejs/keystone/pull/8216) [`20bd5056d`](https://github.com/keystonejs/keystone/commit/20bd5056dc56e95be7891de1b08583f015bc602a) Thanks [@borisno2](https://github.com/borisno2)! - Fixes Dataloader error when resolving relationships when access is `false` on related to-one item
+
+- [#8256](https://github.com/keystonejs/keystone/pull/8256) [`7c723d961`](https://github.com/keystonejs/keystone/commit/7c723d9618e57ca4323fce808e5741172c522b5a) Thanks [@dcousens](https://github.com/dcousens)! - Fix .keystone/types including invalid definitions
+
+- [#8159](https://github.com/keystonejs/keystone/pull/8159) [`bdbe1ad64`](https://github.com/keystonejs/keystone/commit/bdbe1ad64a44bccb28258d490b637e1d81b52f70) Thanks [@borisno2](https://github.com/borisno2)! - Adds the ability to disable telemetry using environment variable `KEYSTONE_TELEMETRY_DISABLED`
+
+- [#8280](https://github.com/keystonejs/keystone/pull/8280) [`384748d85`](https://github.com/keystonejs/keystone/commit/384748d85f06755ee7c8aa6f74f0ffae486b82c1) Thanks [@dcousens](https://github.com/dcousens)! - Fixes `pageMiddleware` to be called for `publicPages`, returning support for public redirects
+
+- [#8222](https://github.com/keystonejs/keystone/pull/8222) [`808505cff`](https://github.com/keystonejs/keystone/commit/808505cff4f65f93cfaab3bbf6178c1a5ec75579) Thanks [@emmatown](https://github.com/emmatown)! - Fixes `defaultFieldMode`
+
+- Updated dependencies [[`3ef0d9d7d`](https://github.com/keystonejs/keystone/commit/3ef0d9d7d857c622cec95b702ea717fa920f8fc0)]:
+  - @keystone-ui/segmented-control@7.0.3
+
 ## 4.0.1
 
 ### Patch Changes
