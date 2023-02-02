@@ -3,7 +3,7 @@ import { allOperations, allowAll } from '@keystone-6/core/access';
 import { text, checkbox, password } from '@keystone-6/core/fields';
 import type { Lists } from '.keystone/types';
 
-function isAdminOrSameUser ({ session, item }: { session: any, item: Lists.User.Item }) {
+function isAdminOrSameUser({ session, item }: { session: any; item: Lists.User.Item }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -14,7 +14,7 @@ function isAdminOrSameUser ({ session, item }: { session: any, item: Lists.User.
   return session.itemId === item.id;
 }
 
-function isAdmin ({ session }: { session: any }) {
+function isAdmin({ session }: { session: any }) {
   // you need to have a session to do this
   if (!session) return false;
 
@@ -61,7 +61,7 @@ export const lists: Lists = {
             fieldMode: ({ session, item }) => {
               if (isAdminOrSameUser({ session, item })) return 'edit';
               return 'hidden';
-            }
+            },
           },
           listView: {
             // hidden except for admins
@@ -78,10 +78,10 @@ export const lists: Lists = {
         ui: {
           // only admins can edit this field
           createView: {
-            fieldMode: ({ session }) => isAdmin({ session }) ? 'edit' : 'hidden',
+            fieldMode: ({ session }) => (isAdmin({ session }) ? 'edit' : 'hidden'),
           },
           itemView: {
-            fieldMode: ({ session }) => isAdmin({ session }) ? 'edit' : 'read',
+            fieldMode: ({ session }) => (isAdmin({ session }) ? 'edit' : 'read'),
           },
         },
       }),

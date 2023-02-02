@@ -9,32 +9,32 @@ export const lists: Lists = {
       operation: allowAll,
       filter: {
         query: ({ operation }) => {
-          console.log('filter', { operation })
-          return false
+          console.log('filter', { operation });
+          return false;
         },
         update: ({ operation }) => {
-          console.log('filter', { operation })
-          return true
+          console.log('filter', { operation });
+          return true;
         },
         delete: ({ operation }) => {
-          console.log('filter', { operation })
-          return true
+          console.log('filter', { operation });
+          return true;
         },
       },
       item: {
         create: ({ operation }) => {
-          console.log('item', { operation })
-          return true
+          console.log('item', { operation });
+          return true;
         },
         update: ({ operation }) => {
-          console.log('item', { operation })
-          return true
+          console.log('item', { operation });
+          return true;
         },
         delete: ({ operation }) => {
-          console.log('item', { operation })
-          return true
+          console.log('item', { operation });
+          return true;
         },
-      }
+      },
     },
     ui: {
       searchFields: ['title', 'content'],
