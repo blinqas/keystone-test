@@ -42,6 +42,7 @@ export const lists: Lists = {
       isAdmin: checkbox({
         access: {
           read: isAdmin,
+          update: isAdmin
         },
         isFilterable: false,
         isOrderable: false,
