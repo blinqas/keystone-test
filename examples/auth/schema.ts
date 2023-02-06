@@ -63,7 +63,7 @@ export const lists: Lists = {
         update: hasSession,
 
         // only allow admins to delete users
-        delete: ({ session }) => session?.data.isAdmin,
+        delete: isAdmin
       },
       filter: {
         update: isAdminOrSameUserFilter
@@ -73,26 +73,29 @@ export const lists: Lists = {
       }
     },
     ui: {
-      // since you can't delete users unless you're an admin, we hide the UI for it
-      hideDelete: ({ session }) => !session?.data.isAdmin,
+      // only show deletion options for admins
+      hideDelete: (args) => !isAdmin(args),
       listView: {
         // the default columns that will be displayed in the list view
         initialColumns: ['name', 'email', 'isAdmin'],
       },
     },
     fields: {
-      // the user's name
+      // the user's name, publicly visible
       name: text({ validation: { isRequired: true } }),
 
       // the user's email address, used as the identity field for authentication
+      //   should not be publicly visible
+      //
       //   we use isIndexed to enforce this email is unique
       email: text({
-        // this field should only be readable by the respective user, or administrators
         access: {
+          // only the respective user, or an admin can read this field
           read: isAdminOrSameUser,
-          update: isAdminOrSameUser
-        },
 
+          // only admins can update this field
+          update: isAdmin
+        },
         isFilterable: false,
         isOrderable: false,
         isIndexed: 'unique',
@@ -102,38 +105,43 @@ export const lists: Lists = {
       }),
 
       // the user's password, used as the secret field for authentication
+      //   should not be publicly visible
       password: password({
         access: {
-          read: isAdminOrSameUser,
+          read: isAdminOrSameUser, // TODO: is this required?
           update: isAdminOrSameUser,
         },
         ui: {
-          // the password field is hidden for the same reasons as access.update
           itemView: {
-            fieldMode: ({ session, item }) => {
-              if (isAdminOrSameUser({ session, item })) return 'edit';
-              return 'hidden';
-            },
+            // don't show this field if it isn't relevant
+            fieldMode: (args) => (isAdminOrSameUser(args) ? 'edit' : 'hidden'),
           },
           listView: {
-            // hidden except for admins
-            fieldMode: ({ session }) => (session?.data?.isAdmin ? 'read' : 'hidden'),
+            // TODO: ?
+            fieldMode: (args) => (isAdmin(args) ? 'read' : 'hidden'),
           },
         },
       }),
+
+      // a flag to indicate if this user is an admin
+      //  should not be publicly visible
       isAdmin: checkbox({
         access: {
-          // only admins can create or update the isAdmin flag for users
+          // only the respective user, or an admin can read this field
+          read: isAdminOrSameUser,
+
+          // only admins can create, or update this field
           create: isAdmin,
           update: isAdmin,
         },
+        defaultValue: false,
         ui: {
           // only admins can edit this field
           createView: {
-            fieldMode: ({ session }) => (isAdmin({ session }) ? 'edit' : 'hidden'),
+            fieldMode: (args) => (isAdmin(args) ? 'edit' : 'hidden'),
           },
           itemView: {
-            fieldMode: ({ session }) => (isAdmin({ session }) ? 'edit' : 'read'),
+            fieldMode: (args) => (isAdmin(args) ? 'edit' : 'read'),
           },
         },
       }),
