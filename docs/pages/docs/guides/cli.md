@@ -14,14 +14,36 @@ $ keystone [command]
 
 Commands
   dev           start the project in development mode (default)
-  postinstall   generate client APIs and types (optional)
-  build         build the project (must be done before using start)
-  start         start the project in production mode
-  {% if $nextRelease %}
-  migrate       setup and run database migrations
-  {% /if %}
+  postinstall   build the project (for development, optional)
+  build         build the project (required by \`keystone start\`)
+  start         start the project
   prisma        run Prisma CLI commands safely
   telemetry     sets telemetry preference (enable/disable/status)
+{% if $nextRelease %}
+
+Options
+  --fix (postinstall) @deprecated
+    do build the graphql or prisma schemas, don't validate them
+
+  --frozen (build)
+    don't build the graphql or prisma schemas, only validate them
+
+  --no-db-push (dev)
+    don't push any updates of your Prisma schema to your database
+
+  --no-prisma (build, dev)
+    don't build or validate the prisma schema
+
+  --no-server (dev)
+    don't start the express server
+
+  --no-ui (build, dev, start)
+    don't build and serve the AdminUI
+
+  --with-migrations (start)
+    trigger prisma to run migrations as part of startup
+{% /if %}
+
 ```
 
 {% hint kind="tip" %}
@@ -51,15 +73,9 @@ We recommend adding the following scripts to your project's `package.json` file:
 }
 ```
 
-{% if $nextRelease %}
 {% hint kind="tip" %}
 Note: Depending on where you are deploying the `prisma migrate deploy` step might be better in the `build` or as a separate step altogether.
 {% /hint %}
-{% else /%}
-{% hint kind="tip" %}
-Note: the deploy script above assumes you are using migrations
-{% /hint %}
-{% /if %}
 
 Read on below for more details about each command, and see [bringing it all together](#bringing-it-all-together) for more details (including some important caveats) about how that "deploy" command works.
 
@@ -91,7 +107,7 @@ When using `keystone dev` the default behaviour is for Keystone to update your d
 
 - Running `keystone dev --no-db-push` - This will skip the dev migration step and not perform any checks on your database to ensure it matches your schema. This can be useful if you have an existing database or want to handle all migrations yourself. Be aware that this may lead to GraphQL runtime errors if a table or table column is unavailable.
 
-See [`prisma migrate` command](#migrate) below for more information on database migrations.
+See [`prisma` command](#prisma) below for more information on database migrations.
 
 {% hint kind="tip" %}
 Be careful of running `keystone dev` while pointing to a production database as this can cause data loss.
