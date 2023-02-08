@@ -1,5 +1,5 @@
 ---
-'@keystone-6/core': minor
+'@keystone-6/core': major
 ---
 
-Adds additional flags to the Keystone `dev`, `build` and `start` CLI commands to change what is built and run 
+Adds additional flags to the `keystone dev`, `keystone build` and `keystone start` CLI commands 
